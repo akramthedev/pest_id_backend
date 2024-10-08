@@ -57,7 +57,7 @@ Route::middleware(['throttle:40,1'])->group(function () {
 
         // Farms API 
         Route::post('farms', [FarmController::class, 'createFarm']); 
-        Route::get('farms', [FarmController::class, 'getAllFarmsPerAdmin']); 
+        Route::get('farms/{id}', [FarmController::class, 'getAllFarmsPerAdmin']); 
         Route::patch('farms/{id}', [FarmController::class, 'updateFarm']); 
         Route::delete('farms/{id}', [FarmController::class, 'deleteFarm']); 
 

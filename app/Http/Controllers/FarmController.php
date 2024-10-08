@@ -38,14 +38,11 @@ class FarmController extends Controller
 
 
 
-
-    public function getAllFarmsPerAdmin()
+    public function getAllFarmsPerAdmin($id)
     {
-        $farms = Farm::where('user_id', auth()->id())->get();
+        $farms = Farm::where('user_id', $id)->get();
         return response()->json($farms, 200);
     }
-
-
 
 
 
