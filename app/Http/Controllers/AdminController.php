@@ -10,10 +10,6 @@ use Illuminate\Support\Facades\Validator;
 class AdminController extends Controller
 {
 
-
-    
-
-
     public function getAdmin(Request $request)
     {
         $admin = auth()->user();
@@ -21,7 +17,12 @@ class AdminController extends Controller
     }
 
 
-
+    public function createAdmin($idAdmin){
+        $admin = Admin::create([
+            'user_id' => $idAdmin,
+        ]);
+        return response()->json($admin, 201);
+    }
 
 
     public function updateAdmin(Request $request)

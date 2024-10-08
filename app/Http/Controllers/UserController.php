@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Admin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -83,7 +84,7 @@ class UserController extends Controller
     
         return response()->json(['message' => 'User successfully deleted.'], 200);
     }
-
+    
     
 
     public function accepterUser($id)
@@ -116,10 +117,23 @@ class UserController extends Controller
             return response()->json(['message' => 'User not found'], 404);
         }
 
-        // Return the user data as JSON
-        return response()->json($user, 200);
+         return response()->json($user, 200);
     }
 
+    
+    public function getAdminIdFromUserId($idUser)
+    {
+        $admin = Admin::where('user_id', $idUser)->first();
+
+         if (!$admin) {
+            return response()->json(['message' => 'Admin not found'], 404);
+        }
+    
+         return response()->json($admin, 200);
+    }
+
+
+     
 
 
 

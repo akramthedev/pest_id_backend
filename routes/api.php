@@ -33,6 +33,7 @@ Route::middleware(['throttle:40,1'])->group(function () {
         Route::get('users', [UserController::class, 'getAllUsers']); 
         Route::get('usersNonAccepted', [UserController::class, 'getAllUsersNonAccepted']); 
         Route::get('user', [UserController::class, 'getUser']); 
+        Route::get('getAdminIdFromUserId/{idUser}', [UserController::class, 'getAdminIdFromUserId']); 
         Route::get('user/{id}', [UserController::class, 'getUserById']); 
         Route::patch('user', [UserController::class, 'updateUser']); 
         Route::patch('user-type', [UserController::class, 'updateUserType']); 
@@ -41,19 +42,16 @@ Route::middleware(['throttle:40,1'])->group(function () {
         Route::post('refuse/{id}', [UserController::class, 'refuserUser']); 
 
         // Admin API 
-        Route::middleware('checkRole:admin')->group(function () {
             Route::get('admin', [AdminController::class, 'getAdmin']); 
             Route::patch('admin', [AdminController::class, 'updateAdmin']); 
             Route::delete('admin', [AdminController::class, 'deleteAdmin']); 
-        });
+            Route::get('admin/{idAdmin}', [AdminController::class, 'createAdmin']); 
 
         // Staff API 
-        Route::middleware('checkRole:staff')->group(function () {
             Route::post('staff', [StaffController::class, 'createStaff']); 
             Route::delete('staff/{id}', [StaffController::class, 'deleteStaff']); 
             Route::patch('staff/{id}/{type}', [StaffController::class, 'updateTypeStaff']); 
-            Route::get('staff/all', [StaffController::class, 'getAllStaffs']); 
-        });
+            Route::get('staffs/{adminId}', [StaffController::class, 'getAllStaffs']); 
 
         // Farms API 
         Route::post('farms', [FarmController::class, 'createFarm']); 
