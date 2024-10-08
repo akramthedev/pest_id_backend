@@ -33,7 +33,9 @@ class UserController extends Controller
             'fullName' => $request->fullName,
             'email' => $request->email,
             'password' => Hash::make($request->password), 
-            'type' => "admin"
+            'type' => "admin",
+            "canAccess" => 0, 
+            "isEmailVerified" => 0
         ]);
 
         return response()->json(['message' => 'User registered successfully', 'user' => $user], 201);
@@ -43,22 +45,83 @@ class UserController extends Controller
 
 
 
-
     public function login(Request $request)
     {
         $credentials = $request->only('email', 'password');
-
-        if (!auth()->attempt($credentials)) {
-            return response()->json(['message' => 'Invalid credentials'], 401);
+    
+        $user = User::where('email', $credentials['email'])->first();
+    
+        if (!$user) {
+            return response()->json(['message' => 'Invalid credentials'], 202);
         }
-
-        $user = auth()->user();
+    
+        if (!$user->canAccess) {  
+            return response()->json(['message' => "Veuillez attendre l'approuvation d'un admin."], 203);
+        }
+    
+        if (!auth()->attempt($credentials)) {
+            return response()->json(['message' => 'Invalid credentials'], 202);
+        }
+    
         $token = $user->createToken('Personal Access Token')->plainTextToken;
-
         return response()->json(['message' => 'Login successful', 'token' => $token, 'user' => $user], 200);
+    }
+    
+        
+    
+    
+    public function refuserUser($id)
+    {
+        // Validate that the user ID exists
+        $user = User::find($id);
+        if (!$user) {
+            return response()->json(['message' => 'User not found.'], 404);
+        }
+    
+        // Delete the user
+        $user->delete();
+    
+        return response()->json(['message' => 'User successfully deleted.'], 200);
     }
 
     
+
+    public function accepterUser($id)
+    {
+        // Validate that the user ID exists
+        $user = User::find($id);
+        if (!$user) {
+            return response()->json(['message' => 'User not found.'], 404);
+        }
+
+        // Update canAccess and isEmailVerified attributes
+        $user->canAccess = 1; // Set canAccess to true (1)
+        $user->isEmailVerified = 1; // Set isEmailVerified to true (1)
+        $user->save(); // Save the changes
+
+        return response()->json(['message' => 'User access granted and email verification set to true.'], 200);
+    }
+
+
+
+
+
+    public function getUserById($id)
+    {
+        // Find the user by ID
+        $user = User::find($id);
+
+        // Check if the user exists
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        // Return the user data as JSON
+        return response()->json($user, 200);
+    }
+
+
+
 
 
     public function getUser(Request $request)
@@ -77,6 +140,19 @@ class UserController extends Controller
         return response()->json($data, 200);
     }
 
+    
+
+    public function getAllUsersNonAccepted()
+    {
+        $users = User::where('canAccess', 0)->get(); 
+
+        $data =  [
+            'status' => 200,
+            'users' => $users
+        ];
+
+        return response()->json($data, 200);
+    }
 
 
     public function updateUser(Request $request)

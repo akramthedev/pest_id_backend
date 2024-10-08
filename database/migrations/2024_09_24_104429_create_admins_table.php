@@ -15,7 +15,7 @@ return new class extends Migration
             $table->text('company_name')->nullable();
             $table->text('company_email')->nullable();
             $table->text('company_mobile')->nullable();
-            $table->timestamps(); //this command add createdAt and updatedAt like in MongoDB automaticaly
+            $table->timestamps(); 
             
         });
     }

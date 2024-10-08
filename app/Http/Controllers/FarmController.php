@@ -27,7 +27,7 @@ class FarmController extends Controller
         }
 
         $farm = Farm::create([
-            'user_id' => auth()->id(),
+            'user_id' => $request->user_id,
             'name' => $request->name,
             'location' => $request->location,
             'size' => $request->size,

@@ -11,6 +11,7 @@ return new class extends Migration
     {
         Schema::create('farms', function (Blueprint $table) {
             $table->id();  
+            $table->float("user_id");
             $table->string('name');  
             $table->string('location');  
             $table->float('size');  

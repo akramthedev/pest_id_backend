@@ -10,7 +10,7 @@ class Prediction extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 'farm_id', 'serre_id', 'description', 'result' 
+        'user_id', 'farm_id', 'serre_id','plaque_id', 'result' 
     ];
 
     // A prediction belongs to a user

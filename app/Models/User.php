@@ -13,7 +13,8 @@ class User extends Model implements AuthenticatableContract // Implement the Aut
     use HasFactory, HasApiTokens, Authenticatable; // Use the Authenticatable trait
 
     protected $fillable = [
-        'fullName', 'email', 'password', 'mobile', 'type'
+
+    'fullName', 'email', 'password', 'mobile', "image", 'type', 'canAccess', 'isEmailVerified'
     ];
 
     public function admins()

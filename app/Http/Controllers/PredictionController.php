@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Prediction;
+use App\Models\Image;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -13,45 +14,54 @@ class PredictionController extends Controller
     // Create a new prediction
     public function createPrediction(Request $request)
     {
-        // Validate the incoming request data
-        $validatedData = $request->validate([
+        
+         $validatedData = $request->validate([
             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', 
             'description' => 'string',
         ]);
-
-        $imagePath = $request->file('image')->store('images');
-        $response = $this->uploadImageToExternalAPI($imagePath); 
-
-        if (!$response || !isset($response['classA'], $response['classB'], $response['classC'])) {
+    
+         $imagePath = $request->file('image')->store('images');
+    
+         $response = $this->uploadImageToExternalAPI($imagePath); 
+    
+         if (!$response || !isset($response['classA'], $response['classB'], $response['classC'])) {
             return response()->json(['message' => 'Image processing failed'], 400);
         }
-
-        $prediction = Prediction::create([
-            'user_id' => auth()->id(),  
+    
+         $prediction = Prediction::create([
+            'user_id' => $request->user_id,  
             'serre_id' => $request->serre_id,  
             'farm_id' => $request->farm_id,  
-            'classA' => $response['classA'],
-            'classB' => $response['classB'],
-            'classC' => $response['classC'],
+            'description' => "Calculation testing...",  
+            'result' => rand(30, 70) 
         ]);
-
-         
+    
+        // Create the image and link to the prediction
         Image::create([
             'prediction_id' => $prediction->id,
-            'path' => $imagePath,  
+            'name' => basename($imagePath), 
+            'size' => $request->file('image')->getSize(),  
+            'class_A' => $response['classA'],  
+            'class_B' => $response['classB'],  
+            'class_C' => $response['classC'],  
         ]);
-
+    
+        // Return success response
         return response()->json(['message' => 'Prediction created successfully', 'prediction' => $prediction], 201);
+ 
+
     }
-
-
-
+    
     private function uploadImageToExternalAPI($imagePath)
     {
-        //external API for image upload
+        // Simulated API response for testing
+        return [
+            'classA' => rand(1, 30),   
+            'classB' => rand(1, 30),   
+            'classC' => rand(1, 30),   
+        ];
     }
-
- 
+    
 
     // Get all predictions
     public function getAllPredictions()
@@ -62,14 +72,16 @@ class PredictionController extends Controller
 
 
 
-    // Get predictions for a specific user
     public function getUserPredictions($userId)
     {
         $predictions = Prediction::where('user_id', $userId)->get();
         return response()->json($predictions, 200);
     }
 
-
+    public function getSinglePredictions ($predId){
+        $prediction = Prediction::where('id', $predId)->get();
+        return response()->json($prediction, 200);
+    }
 
 
     // Update a prediction
