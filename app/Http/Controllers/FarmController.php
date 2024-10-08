@@ -16,15 +16,7 @@ class FarmController extends Controller
 
     public function createFarm(Request $request)
     {
-        $validatedData = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'location' => 'required|string|max:255',
-            'size' => 'required|numeric',
-        ]);
-
-        if ($validatedData->fails()) {
-            return response()->json(['errors' => $validatedData->errors()], 422);
-        }
+        
 
         $farm = Farm::create([
             'user_id' => $request->user_id,
@@ -43,8 +35,12 @@ class FarmController extends Controller
         $farms = Farm::where('user_id', $id)->get();
         return response()->json($farms, 200);
     }
-
-
+    
+    public function getSingleFarm($id)
+    {
+        $SingleFarm = Farm::where('id', $id)->get();
+        return response()->json($SingleFarm, 200);
+    }
 
     public function updateFarm(Request $request, $id)
     {

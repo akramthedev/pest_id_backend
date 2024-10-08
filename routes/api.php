@@ -58,6 +58,7 @@ Route::middleware(['throttle:40,1'])->group(function () {
         Route::get('farms/{id}', [FarmController::class, 'getAllFarmsPerAdmin']); 
         Route::patch('farms/{id}', [FarmController::class, 'updateFarm']); 
         Route::delete('farms/{id}', [FarmController::class, 'deleteFarm']); 
+        Route::get('farms/getSingleFarm/{id}', [FarmController::class, 'getSingleFarm']); 
 
         // Serre API 
         Route::post('serres', [SerreController::class, 'createSerre']); 

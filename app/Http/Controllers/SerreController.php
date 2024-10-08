@@ -27,13 +27,13 @@ class SerreController extends Controller
             'farm_id' => $request->farm_id,
             'name' => $request->name,
             'size' => $request->size,
+            "type" => $request->type
         ]);
 
         return response()->json(['message' => 'Serre created successfully', 'serre' => $serre], 201);
     }
 
-    // Get all serres for a specific farm
-    public function getAllSerresPerFarm($farmId)
+     public function getAllSerresPerFarm($farmId)
     {
         $serres = Serre::where('farm_id', $farmId)->get();
         return response()->json($serres, 200);
