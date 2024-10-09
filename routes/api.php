@@ -40,7 +40,9 @@ Route::middleware(['throttle:40,1'])->group(function () {
         Route::delete('user', [UserController::class, 'deleteUser']); 
         Route::post('accept/{id}', [UserController::class, 'accepterUser']); 
         Route::post('refuse/{id}', [UserController::class, 'refuserUser']); 
-
+        Route::get('updateUserRestriction/{id}/{access}', [UserController::class, 'updateUserRestriction']); 
+        Route::post('updatePassword/{id}', [UserController::class, 'updatePassword']); 
+        
         // Admin API 
             Route::get('admin', [AdminController::class, 'getAdmin']); 
             Route::patch('admin', [AdminController::class, 'updateAdmin']); 

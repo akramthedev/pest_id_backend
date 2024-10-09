@@ -156,10 +156,73 @@ class UserController extends Controller
 
     
 
+    public function updatePassword(Request $request, $id)
+{
+    // Validate the incoming request
+    $validator = Validator::make($request->all(), [
+        'ancien' => 'required|string',
+        'nouveau' => 'required|string|min:5',
+        'confirmnouveau' => 'required|string|min:5',
+    ]);
+
+    // Check if validation fails
+    if ($validator->fails()) {
+        return response()->json($validator->errors(), 399);
+    }
+
+    // Find the user by ID
+    $user = User::find($id);
+
+    // Check if the user exists
+    if (!$user) {
+        return response()->json(['message' => 'User not found'], 301);
+    }
+
+    // Verify the old password
+    if (!Hash::check($request->ancien, $user->password)) {
+        return response()->json(['message' => 'Ancien mot de passe ne matche pas'], 287);
+    }
+
+     
+
+    // Update the password
+    $user->password = Hash::make($request->nouveau);
+    $user->save();
+
+    return response()->json(['message' => 'Mot de passe changé avec succès!'], 200);
+}
+
+
+
+
+
+    public function updateUserRestriction($id, $access)
+    {
+        // Validate that the user ID exists
+        $user = User::find($id);
+        if (!$user) {
+            return response()->json(['message' => 'User not found.'], 404);
+        }
+
+        if($access === "canNotAccess"){
+            //we give him access = 1
+            $user->canAccess = 1;  
+        }
+        else{
+            // we give him access = 0
+            $user->canAccess = 0;  
+        }
+        $user->save();  
+
+        return response()->json(['message' => 'User access updated successfully.', 'user' => $user], 200);
+    }
+
+
+
+
     public function getAllUsersNonAccepted()
     {
-        $users = User::where('canAccess', 0)->get(); 
-
+        $users = User::where('canAccess', 0)->where('isEmailVerified', 0)->get();
         $data =  [
             'status' => 200,
             'users' => $users
@@ -173,9 +236,10 @@ class UserController extends Controller
         // Validate the incoming request
         $validator = Validator::make($request->all(), [
             'fullName' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $idUser, // Ensure email is unique except for the current user
+            'email' => 'required|string|email|max:255|unique:users,email,' . $idUser, 
             'mobile' => 'nullable|string|max:20',
             'image' => 'nullable|string',
+            'type'=> "required|string"
         ]);
     
         // Check if validation fails
@@ -192,7 +256,7 @@ class UserController extends Controller
         }
     
         // Update the user's attributes
-        $user->update($request->only('fullName', 'email', 'mobile', 'image'));
+        $user->update($request->only('fullName', 'email', 'mobile', 'image', 'type'));
     
         // Return a success response
         return response()->json(['message' => 'User updated successfully', 'user' => $user]);
