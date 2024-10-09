@@ -168,24 +168,36 @@ class UserController extends Controller
         return response()->json($data, 200);
     }
 
-
-    public function updateUser(Request $request)
+    public function updateUser(Request $request, $idUser)
     {
-        $user = $request->user();
-
+        // Validate the incoming request
         $validator = Validator::make($request->all(), [
-            'fullName' => 'sometimes|required|string|max:255',
-            'mobile' => 'sometimes|required|string|max:15',
+            'fullName' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email,' . $idUser, // Ensure email is unique except for the current user
+            'mobile' => 'nullable|string|max:20',
+            'image' => 'nullable|string',
         ]);
-
+    
+        // Check if validation fails
         if ($validator->fails()) {
             return response()->json($validator->errors(), 400);
         }
-
-        $user->update($request->only('fullName', 'mobile'));
+    
+        // Find the user by ID
+        $user = User::find($idUser);
+    
+        // Check if the user exists
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+    
+        // Update the user's attributes
+        $user->update($request->only('fullName', 'email', 'mobile', 'image'));
+    
+        // Return a success response
         return response()->json(['message' => 'User updated successfully', 'user' => $user]);
     }
-
+    
 
 
 

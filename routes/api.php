@@ -35,7 +35,7 @@ Route::middleware(['throttle:40,1'])->group(function () {
         Route::get('user', [UserController::class, 'getUser']); 
         Route::get('getAdminIdFromUserId/{idUser}', [UserController::class, 'getAdminIdFromUserId']); 
         Route::get('user/{id}', [UserController::class, 'getUserById']); 
-        Route::patch('user', [UserController::class, 'updateUser']); 
+        Route::post('updateUserInfos/{idUser}', [UserController::class, 'updateUser']); 
         Route::patch('user-type', [UserController::class, 'updateUserType']); 
         Route::delete('user', [UserController::class, 'deleteUser']); 
         Route::post('accept/{id}', [UserController::class, 'accepterUser']); 
