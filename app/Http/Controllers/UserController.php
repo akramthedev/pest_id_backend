@@ -126,7 +126,7 @@ class UserController extends Controller
         $admin = Admin::where('user_id', $idUser)->first();
 
          if (!$admin) {
-            return response()->json(['message' => 'Admin not found'], 404);
+            return response()->json(['message' => 'Admin not found'], 299);
         }
     
          return response()->json($admin, 200);
