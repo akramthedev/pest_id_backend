@@ -27,8 +27,7 @@ Route::middleware(['throttle:40,1'])->group(function () {
     Route::post('login', [UserController::class, 'login']);                                   //done
 
 
-    // Grouping inside Sanctum Middleware
-         
+    // Grouping inside Sanctum Middleware         
         // User API 
         Route::get('users', [UserController::class, 'getAllUsers']); 
         Route::get('usersNonAccepted', [UserController::class, 'getAllUsersNonAccepted']); 
