@@ -31,4 +31,10 @@ class User extends Model implements AuthenticatableContract // Implement the Aut
     {
         return $this->hasMany(Prediction::class);
     }
+
+    public function farms()
+    {
+        return $this->hasMany(Farm::class);
+    }
+    
 }

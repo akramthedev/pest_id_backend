@@ -25,10 +25,6 @@ class Admin extends Model
         return $this->hasMany(Staff::class);
     }
 
-    // A staff member can have many predictions
-    public function predictions()
-    {
-        return $this->hasMany(Prediction::class);
-    }
+  
     
 }

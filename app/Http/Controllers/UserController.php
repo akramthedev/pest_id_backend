@@ -5,6 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Admin;
+use App\Models\Prediction;
+use App\Models\Staff;
+use App\Models\Image;
+use App\Models\Farm;
+use App\Models\Serre;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -284,18 +289,151 @@ class UserController extends Controller
         return response()->json(['message' => 'User type updated successfully', 'user' => $user], 200);
     }
 
+   
+    
+
+
+   
+    
 
 
 
-    public function deleteUser(Request $request)
-    {
-        $user = $request->user();
 
-        if (!$user) {
-            throw new AuthorizationException('User not found.');
-        }
 
-        $user->delete();
-        return response()->json(['message' => 'User deleted successfully']);
+
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+
+
+    public function deleteUserWhoIsAdmin(Request $request, $id)
+{
+    // Find the admin using user_id
+    $admin = Admin::where('user_id', $id)->first();  
+
+    if (!$admin) {
+        return response()->json(['message' => 'Admin not found.'], 404);
     }
+
+    // Check and delete staff and their related predictions, images, and users
+    if ($admin->staffs) {
+        foreach ($admin->staffs as $staff) {
+            // Check and delete staff predictions and their images
+            if ($staff->predictions) {
+                foreach ($staff->predictions as $staffPrediction) {
+                    // Check and delete staffPrediction images
+                    if ($staffPrediction->images) {
+                        foreach ($staffPrediction->images as $staffImage) {
+                            $staffImage->delete();  
+                        }
+                    }
+                    $staffPrediction->delete();  
+                }
+            }
+            // Delete the user associated with the staff
+            if ($staff->user) {
+                $staff->user->delete();
+            }
+            $staff->delete(); 
+        }
+    }
+
+    // Check and delete admin's own predictions and images
+    if ($admin->user->predictions) {
+        foreach ($admin->user->predictions as $prediction) {
+            if ($prediction->images) {
+                foreach ($prediction->images as $image) {
+                    $image->delete();
+                }
+            }
+            $prediction->delete();
+        }
+    }
+
+    // Check and delete farms and their related serres
+    if ($admin->farms) {
+        foreach ($admin->farms as $farm) {
+            // Check and delete serres of the farm
+            if ($farm->serres) {
+                foreach ($farm->serres as $serre) {
+                    $serre->delete();
+                }
+            }
+            $farm->delete();
+        }
+    }
+
+    // Now delete the admin record itself
+    $admin->delete();
+
+    // Finally, delete the user linked to the admin
+    if ($admin->user) {  // Check if the user exists before deletion
+        $admin->user->delete();
+    }
+
+    return response()->json(['message' => 'Admin, farms, serres, staffs, predictions, and images deleted successfully']);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public function deleteUserStaffNotAdmin(Request $request, $id)
+    {
+      
+        $user = User::find($id);
+    
+        if (!$user) {
+            return response()->json(['message' => 'User not found.'], 404);
+        }
+    
+         
+        $predictions = $user->predictions;  
+        foreach ($predictions as $prediction) {
+            
+            $images = $prediction->images;  
+            foreach ($images as $image) {
+                $image->delete();  
+            }
+            $prediction->delete();  
+        }
+    
+        $staffs = $user->staffs;   
+        foreach ($staffs as $staff) {
+            $staff->delete();  
+        }
+    
+        
+        $user->delete();
+    
+        return response()->json(['message' => 'User, staff, predictions, and images deleted successfully']);
+    }
+    
+
+
 }
