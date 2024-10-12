@@ -6,10 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Admin;
 use App\Models\Prediction;
-use App\Models\Staff;
 use App\Models\Image;
 use App\Models\Farm;
 use App\Models\Serre;
+use App\Models\Staff;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -27,7 +27,7 @@ class UserController extends Controller
          
         $validator = Validator::make($request->all(), [
             'fullName' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
+            'email' => 'required|string|max:255|unique:users',
             'password' => 'required|string',
         ]);
 
@@ -289,115 +289,101 @@ class UserController extends Controller
         return response()->json(['message' => 'User type updated successfully', 'user' => $user], 200);
     }
 
-   
-    
-
-
-   
-    
-
-
-
-
-
-
-
-
-
-
 
 
 
     
-
-
-
-
-
-
-
-
-
     public function deleteUserWhoIsAdmin(Request $request, $id)
-{
-    // Find the admin using user_id
-    $admin = Admin::where('user_id', $id)->first();  
+    {
+        // Find the user by ID (which can be an admin user)
+        $user = User::findOrFail($id); // This will throw an exception if the user is not found
+    
+        // Step 1: Delete all predictions associated with the user
+        $predictions = Prediction::where('user_id', $user->id)->get();
+        
+        if (!$predictions->isEmpty()) { // Check if there are predictions
+            foreach ($predictions as $prediction) {
+                // Step 1.1: Delete associated images (if not set up to cascade)
+                $images = Image::where('prediction_id', $prediction->id)->get();
+                if (!$images->isEmpty()) { // Check if there are images
+                    foreach ($images as $image) {
+                        $image->delete();
+                    }
+                }
+    
+                // Step 1.2: Delete the prediction itself
+                $prediction->delete();
+            }
+        }
+    
+        // Step 2: Delete all staff members associated with the user
+        $staffMembers = Staff::where('admin_id', $user->id)->get();
+        
+        if(!$staffMembers->isEmpty()){
+            foreach ($staffMembers as $staff) {
+                $user = User::where('id',$staff->user_id)->first();
+                $user->delete();
+            }
+        }
+    
+       /*
+        if (!$staffMembers->isEmpty()) { // Check if there are staff members
+            foreach ($staffMembers as $staff) {
+                // First, delete the staff user associated with the staff member
+                $staffUser = User::where('id', $staff->user_id)->first();
 
-    if (!$admin) {
-        return response()->json(['message' => 'Admin not found.'], 404);
-    }
-
-    // Check and delete staff and their related predictions, images, and users
-    if ($admin->staffs) {
-        foreach ($admin->staffs as $staff) {
-            // Check and delete staff predictions and their images
-            if ($staff->predictions) {
-                foreach ($staff->predictions as $staffPrediction) {
-                    // Check and delete staffPrediction images
-                    if ($staffPrediction->images) {
-                        foreach ($staffPrediction->images as $staffImage) {
-                            $staffImage->delete();  
+                if ($staffUser) {
+                    // Delete their predictions first if necessary
+                    $staffPredictions = Prediction::where('user_id', $staffUser->id)->get();
+                    if (!$staffPredictions->isEmpty()) { // Check if there are staff predictions
+                        foreach ($staffPredictions as $staffPrediction) {
+                            // Delete associated images
+                            $images = Image::where('prediction_id', $staffPrediction->id)->get();
+                            if (!$images->isEmpty()) { // Check if there are images
+                                foreach ($images as $image) {
+                                    $image->delete();
+                                }
+                            }
+                            $staffPrediction->delete();
                         }
                     }
-                    $staffPrediction->delete();  
+                    
+                    // Finally delete the staff user
+                    $staffUser->delete();
                 }
+    
+                // Now delete the staff member entry
+                $staff->delete();
             }
-            // Delete the user associated with the staff
-            if ($staff->user) {
-                $staff->user->delete();
-            }
-            $staff->delete(); 
         }
-    }
-
-    // Check and delete admin's own predictions and images
-    if ($admin->user->predictions) {
-        foreach ($admin->user->predictions as $prediction) {
-            if ($prediction->images) {
-                foreach ($prediction->images as $image) {
-                    $image->delete();
+       */
+    
+        // Step 3: Delete all farms and their serres associated with the user
+        $farms = Farm::where('user_id', $user->id)->get();
+    
+        if (!$farms->isEmpty()) { // Check if there are farms
+            foreach ($farms as $farm) {
+                // Step 3.1: Delete associated serres
+                $serres = Serre::where('farm_id', $farm->id)->get();
+                if (!$serres->isEmpty()) { // Check if there are serres
+                    foreach ($serres as $serre) {
+                        $serre->delete(); // Delete each serre
+                    }
                 }
+                
+                // Delete the farm itself
+                $farm->delete();
             }
-            $prediction->delete();
         }
+    
+        // Step 4: Finally, delete the user
+        $user->delete();
+    
+        return response()->json(['message' => 'User and associated records deleted successfully.']);
     }
+    
 
-    // Check and delete farms and their related serres
-    if ($admin->farms) {
-        foreach ($admin->farms as $farm) {
-            // Check and delete serres of the farm
-            if ($farm->serres) {
-                foreach ($farm->serres as $serre) {
-                    $serre->delete();
-                }
-            }
-            $farm->delete();
-        }
-    }
-
-    // Now delete the admin record itself
-    $admin->delete();
-
-    // Finally, delete the user linked to the admin
-    if ($admin->user) {  // Check if the user exists before deletion
-        $admin->user->delete();
-    }
-
-    return response()->json(['message' => 'Admin, farms, serres, staffs, predictions, and images deleted successfully']);
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
+    
 
 
 
@@ -405,35 +391,45 @@ class UserController extends Controller
 
     public function deleteUserStaffNotAdmin(Request $request, $id)
     {
-      
+        // Find the user by ID
         $user = User::find($id);
     
         if (!$user) {
             return response()->json(['message' => 'User not found.'], 404);
         }
     
-         
-        $predictions = $user->predictions;  
-        foreach ($predictions as $prediction) {
-            
-            $images = $prediction->images;  
-            foreach ($images as $image) {
-                $image->delete();  
+        // Step 1: Delete predictions associated with the user
+        $predictions = $user->predictions;  // Assuming you have a relation defined in User model
+    
+        // Check if there are predictions
+        if (!$predictions->isEmpty()) {
+            foreach ($predictions as $prediction) {
+                // Step 1.1: Delete associated images
+                $images = $prediction->images;  // Assuming you have a relation defined in Prediction model
+                
+                if (!$images->isEmpty()) { // Check if there are images
+                    foreach ($images as $image) {
+                        $image->delete();  // Delete each image
+                    }
+                }
+                $prediction->delete();  // Delete the prediction itself
             }
-            $prediction->delete();  
         }
     
-        $staffs = $user->staffs;   
-        foreach ($staffs as $staff) {
-            $staff->delete();  
+        // Step 2: Delete all staff roles associated with the user
+        $staffs = $user->staffs;  // Assuming you have a relation defined in User model
+    
+        // Check if there are staff members
+        if (!$staffs->isEmpty()) {
+            foreach ($staffs as $staff) {
+                $staff->delete();  // Delete each staff record
+            }
         }
     
-        
+        // Step 3: Finally, delete the user
         $user->delete();
     
-        return response()->json(['message' => 'User, staff, predictions, and images deleted successfully']);
+        return response()->json(['message' => 'User, staff, predictions, and images deleted successfully.']);
     }
-    
-
 
 }
