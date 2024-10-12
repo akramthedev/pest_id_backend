@@ -27,7 +27,7 @@ class StaffController extends Controller
         ]);
 
         if ($validatedData->fails()) {
-            return response()->json(['errors' => $validatedData->errors()], 422);
+            return response()->json(['errors' => $validatedData->errors()], 222);
         }
 
         if ($request->admin_id && !Admin::find($request->admin_id)) {
@@ -38,6 +38,7 @@ class StaffController extends Controller
             'email' => $request->email,
             'password' => bcrypt($request->password),
             'mobile' => $request->mobile,
+            'image' => "https://github.com/akramthedev/german86877978/blob/29deafd8def8d777117aff6413aa5c41b5a30b4d/Design%20sans%20titre.png?raw=true",
             'type' => $request->typeS,
             'canAccess' => 1, 
             'isEmailVerified' => 1

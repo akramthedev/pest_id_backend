@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Farm;
+use App\Models\Serre;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -46,8 +47,8 @@ class FarmController extends Controller
     {
         $validatedData = Validator::make($request->all(), [
             'name' => 'string|max:255',
-            'location' => 'string|max:255',
-            'size' => 'numeric',
+            'location' => 'string|max:255|nullable',
+            'size' => 'numeric|nullable',
         ]);
 
         if ($validatedData->fails()) {
@@ -76,6 +77,16 @@ class FarmController extends Controller
 
         $farm->delete();
         return response()->json(['message' => 'Farm deleted successfully.'], 200);
+    }
+
+
+
+    public function getFarmsWithGreenhouses($id)
+    {
+        $farms = Farm::where('user_id', $id)->get();
+        $farms->load('serres');
+        return response()->json($farms, 200);
+        
     }
 
 

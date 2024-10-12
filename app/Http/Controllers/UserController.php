@@ -38,6 +38,7 @@ class UserController extends Controller
         $user = User::create([
             'fullName' => $request->fullName,
             'email' => $request->email,
+            'image' => "https://github.com/akramthedev/german86877978/blob/29deafd8def8d777117aff6413aa5c41b5a30b4d/Design%20sans%20titre.png?raw=true",
             'password' => Hash::make($request->password), 
             'type' => "admin",
             "canAccess" => 0, 
@@ -259,7 +260,14 @@ class UserController extends Controller
         if (!$user) {
             return response()->json(['message' => 'User not found'], 404);
         }
-    
+
+        if($request->type === "admin"){
+            //we create a admin in table of admins 
+            $admin = Admin::create([
+                'user_id' => $idUser,
+            ]);
+        }
+
         // Update the user's attributes
         $user->update($request->only('fullName', 'email', 'mobile', 'image', 'type'));
     

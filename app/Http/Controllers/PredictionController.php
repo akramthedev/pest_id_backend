@@ -16,8 +16,7 @@ class PredictionController extends Controller
     {
         
          $validatedData = $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', 
-            'description' => 'string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', 
         ]);
     
          $imagePath = $request->file('image')->store('images');
@@ -32,7 +31,6 @@ class PredictionController extends Controller
             'user_id' => $request->user_id,  
             'serre_id' => $request->serre_id,  
             'farm_id' => $request->farm_id,  
-            'description' => "Calculation testing...",  
             'result' => rand(30, 70) 
         ]);
     
