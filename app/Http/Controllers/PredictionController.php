@@ -31,6 +31,7 @@ class PredictionController extends Controller
             'user_id' => $request->user_id,  
             'serre_id' => $request->serre_id,  
             'farm_id' => $request->farm_id,  
+            'plaque_id' =>$request->plaque_id,
             'result' => rand(30, 70) 
         ]);
     
@@ -86,7 +87,9 @@ class PredictionController extends Controller
     public function updatePrediction(Request $request, $id)
     {
         $validatedData = Validator::make($request->all(), [
-            'prediction_data' => 'string',
+            'farm_id' => 'string',
+            'serre_id' => 'string',
+            'created_at' => 'string'
         ]);
 
         if ($validatedData->fails()) {
@@ -98,7 +101,7 @@ class PredictionController extends Controller
             return response()->json(['message' => 'Prediction not found.'], 404);
         }
 
-        $prediction->update($request->only(['prediction_data']));
+        $prediction->update($request->only('farm_id', 'serre_id', 'created_at'));
 
         return response()->json(['message' => 'Prediction updated successfully', 'prediction' => $prediction], 200);
     }
