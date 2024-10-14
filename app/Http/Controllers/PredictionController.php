@@ -62,7 +62,6 @@ class PredictionController extends Controller
     }
     
 
-    // Get all predictions
     public function getAllPredictions()
     {
         $predictions = Prediction::all();
@@ -86,14 +85,16 @@ class PredictionController extends Controller
     // Update a prediction
     public function updatePrediction(Request $request, $id)
     { 
-
-         
         $prediction = Prediction::find($id);
         if (!$prediction) {
             return response()->json(['message' => 'Prediction not found.'], 404);
         }
 
-        $prediction->update($request->only('plaque_id','farm_id', 'serre_id', 'created_at'));
+        $prediction->plaque_id = $request->input('plaque_id');
+        $prediction->farm_id = $request->input('farm_id');
+        $prediction->serre_id = $request->input('serre_id');
+        $prediction->created_at = $request->input('created_at');
+        $prediction->save();
 
         return response()->json(['message' => 'Prediction updated successfully', 'prediction' => $prediction], 200);
     }

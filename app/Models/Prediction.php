@@ -8,9 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Prediction extends Model
 {
     use HasFactory;
+    public $timestamps = false;
 
     protected $fillable = [
-        'user_id', 'farm_id', 'serre_id','plaque_id', 'result' 
+        'user_id', 'farm_id', 'serre_id','plaque_id', 'result', 'created_at'
     ];
 
     // A prediction belongs to a user
