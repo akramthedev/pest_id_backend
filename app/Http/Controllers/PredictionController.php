@@ -85,23 +85,15 @@ class PredictionController extends Controller
 
     // Update a prediction
     public function updatePrediction(Request $request, $id)
-    {
-        $validatedData = Validator::make($request->all(), [
-            'farm_id' => 'string',
-            'serre_id' => 'string',
-            'created_at' => 'string'
-        ]);
+    { 
 
-        if ($validatedData->fails()) {
-            return response()->json(['errors' => $validatedData->errors()], 422);
-        }
-
+         
         $prediction = Prediction::find($id);
         if (!$prediction) {
             return response()->json(['message' => 'Prediction not found.'], 404);
         }
 
-        $prediction->update($request->only('farm_id', 'serre_id', 'created_at'));
+        $prediction->update($request->only('plaque_id','farm_id', 'serre_id', 'created_at'));
 
         return response()->json(['message' => 'Prediction updated successfully', 'prediction' => $prediction], 200);
     }
