@@ -14,21 +14,7 @@ class StaffController extends Controller
 {
     public function createStaff(Request $request)
     {
-
-        $validatedData = Validator::make($request->all(), [
-            'fullName' => 'nullable|string|max:255',
-            'email' => 'nullable|email|unique:users,email',
-            'password' => 'nullable|string|min:4',
-            'mobile' => 'nullable|string|max:15',
-            'typeEmploiyement' => 'nullable|string',
-            'admin_id' => 'required',
-            'position'=> 'nullable',
-            'typeS' => 'nullable'
-        ]);
-
-        if ($validatedData->fails()) {
-            return response()->json(['errors' => $validatedData->errors()], 222);
-        }
+ 
 
         if ($request->admin_id && !Admin::find($request->admin_id)) {
             return response()->json(['error' => 'Admin not found.'], 404);

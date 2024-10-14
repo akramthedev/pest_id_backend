@@ -237,6 +237,21 @@ class UserController extends Controller
         return response()->json($data, 200);
     }
 
+
+    
+    public function UserIsWelcomedDone($id)
+    {
+        $user = User::find($id);
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+    
+        $user->update(['is_first_time_connected' => 1]);
+        return response()->json(['message' => 'User updated successfully', 'user' => $user]);
+    }
+
+
+
     public function updateUser(Request $request, $idUser)
     {
     

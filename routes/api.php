@@ -29,6 +29,8 @@ Route::middleware(['throttle:40,1'])->group(function () {
 
     // Grouping inside Sanctum Middleware         
         // User API 
+        
+        Route::get('user_is_welcomed_done/{id}', [UserController::class, 'UserIsWelcomedDone']); 
         Route::get('users', [UserController::class, 'getAllUsers']); 
         Route::get('usersNonAccepted', [UserController::class, 'getAllUsersNonAccepted']); 
         Route::get('user', [UserController::class, 'getUser']); 

@@ -14,7 +14,7 @@ class User extends Model implements AuthenticatableContract // Implement the Aut
 
     protected $fillable = [
 
-    'fullName', 'email', 'password', 'mobile', "image", 'type', 'canAccess', 'isEmailVerified'
+    'fullName', 'email', 'password', 'mobile', "image", 'type', 'canAccess', 'isEmailVerified', 'is_first_time_connected'
     ];
 
     public function admins()
