@@ -239,19 +239,6 @@ class UserController extends Controller
 
     public function updateUser(Request $request, $idUser)
     {
-        // Validate the incoming request
-        $validator = Validator::make($request->all(), [
-            'fullName' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $idUser, 
-            'mobile' => 'nullable|string|max:20',
-            'image' => 'nullable|string',
-            'type'=> "required|string"
-        ]);
-    
-        // Check if validation fails
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 400);
-        }
     
         // Find the user by ID
         $user = User::find($idUser);
