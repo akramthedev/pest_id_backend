@@ -32,6 +32,7 @@ class PredictionController extends Controller
             'serre_id' => $request->serre_id,  
             'farm_id' => $request->farm_id,  
             'plaque_id' =>$request->plaque_id,
+            'created_at' => $request->created_at,
             'result' => rand(30, 70) 
         ]);
     

@@ -58,6 +58,7 @@ Route::middleware(['throttle:api'])->group(function () {
     Route::delete('farms/{id}', [FarmController::class, 'deleteFarm']); 
     Route::get('farms/getSingleFarm/{id}', [FarmController::class, 'getSingleFarm']);  
     Route::get('getFarmsWithGreenhouses/{id}', [FarmController::class, 'getFarmsWithGreenhouses']);  
+    Route::get('farmANDserre/{idFarm}/{idSerre}/{idUser}', [FarmController::class, 'farmANDserre']);  
 
     // Serre API 
     Route::post('serres', [SerreController::class, 'createSerre']); 

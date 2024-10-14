@@ -78,7 +78,28 @@ class FarmController extends Controller
         $farm->delete();
         return response()->json(['message' => 'Farm deleted successfully.'], 200);
     }
-
+    public function farmANDserre($idFarm, $idSerre, $idUser)
+    {
+        // Fetch the farm for the given user
+        $farm = Farm::where('id', $idFarm)->where('user_id', $idUser)->first();
+    
+        // Check if the farm exists
+        if (!$farm) {
+            return response()->json(['message' => 'Farm not found or you do not have permission to access this farm.'], 404);
+        }
+    
+        // Fetch the serre (greenhouse) for the given farm
+        $serre = Serre::where('id', $idSerre)->where('farm_id', $idFarm)->first();
+    
+        // Check if the serre exists
+        if (!$serre) {
+            return response()->json(['message' => 'Greenhouse not found for the specified farm.'], 404);
+        }
+    
+        // Return both farm and serre information
+        return response()->json(['farm' => $farm, 'serre' => $serre], 200);
+    }
+    
 
 
     public function getFarmsWithGreenhouses($id)
