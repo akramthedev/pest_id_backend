@@ -5,16 +5,29 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract; // Import the Authenticatable contract
-use Illuminate\Auth\Authenticatable; // Import the Authenticatable trait
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;  
+use Illuminate\Auth\Authenticatable;  
 
-class User extends Model implements AuthenticatableContract // Implement the Authenticatable contract
+class User extends Model implements AuthenticatableContract  
 {
-    use HasFactory, HasApiTokens, Authenticatable; // Use the Authenticatable trait
+    use HasFactory, HasApiTokens, Authenticatable;  
 
     protected $fillable = [
-
-    'fullName', 'email', 'password', 'mobile', "image", 'type', 'canAccess', 'isEmailVerified', 'is_first_time_connected'
+        'fullName',
+        'email', 
+        'password', 
+        'mobile', 
+        "image", 
+        'type', 
+        'canAccess', 
+        'isEmailVerified', 
+        'is_first_time_connected',
+        'historique_notice',
+        "mesfermes_notice", 
+        "mespersonels_notice", 
+        "dashboard_notice",
+        "liste_users_notice",
+        "nouvelle_demande_notice"  
     ];
 
     public function admins()

@@ -25,6 +25,14 @@ Route::middleware(['throttle:api'])->group(function () {
     // Grouping inside Sanctum Middleware         
     // User API 
     Route::get('user_is_welcomed_done/{id}', [UserController::class, 'UserIsWelcomedDone']); 
+    
+    Route::get('notice1/{id}', [UserController::class, 'notice1']); 
+    Route::get('notice2/{id}', [UserController::class, 'notice2']); 
+    Route::get('notice3/{id}', [UserController::class, 'notice3']); 
+    Route::get('notice4/{id}', [UserController::class, 'notice4']); 
+    Route::get('notice5/{id}', [UserController::class, 'notice5']); 
+    Route::get('notice6/{id}', [UserController::class, 'notice6']); 
+
     Route::get('users', [UserController::class, 'getAllUsers']); 
     Route::get('usersNonAccepted', [UserController::class, 'getAllUsersNonAccepted']); 
     Route::get('user', [UserController::class, 'getUser']); 

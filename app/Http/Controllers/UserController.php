@@ -250,11 +250,80 @@ class UserController extends Controller
         return response()->json(['message' => 'User updated successfully', 'user' => $user]);
     }
 
+    public function notice1($id)
+    {
+        $user = User::find($id);
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 202);
+        }
+    
+        $user->update(['historique_notice' => 1]);
+        return response()->json(['message' => 'User updated successfully', 'user' => $user]);
+    }
+
+
+
+    public function notice2($id)
+    {
+        $user = User::find($id);
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 202);
+        }
+    
+        $user->update(['mesfermes_notice' => 1]);
+        return response()->json(['message' => 'User updated successfully', 'user' => $user]);
+    }
+
+
+    public function notice3($id)
+    {
+        $user = User::find($id);
+        if (!$user) {
+            return response()->json($user, 202);
+        }
+    
+        $user->update(['mespersonels_notice' => 1]);
+        return response()->json(['message' => 'User updated successfully', 'user' => $user]);
+    }
+
+
+    public function notice4($id)
+    {
+        $user = User::find($id);
+        if (!$user) {
+            return response()->json($user, 202);
+        }
+    
+        $user->update(['dashboard_notice' => 1]);
+        return response()->json(['message' => 'User updated successfully', 'user' => $user]);
+    }
+
+    public function notice5($id)
+    {
+        $user = User::find($id);
+        if (!$user) {
+            return response()->json($user, 202);
+        }
+    
+        $user->update(['liste_users_notice' => 1]);
+        return response()->json(['message' => 'User updated successfully', 'user' => $user]);
+    }
+
+    public function notice6($id)
+    {
+        $user = User::find($id);
+        if (!$user) {
+            return response()->json($user, 202);
+        }
+    
+        $user->update(['nouvelle_demande_notice' => 1]);
+        return response()->json(['message' => 'User updated successfully', 'user' => $user]);
+    }
 
 
     public function updateUser(Request $request, $idUser)
     {
-    
+
         // Find the user by ID
         $user = User::find($idUser);
     
