@@ -24,22 +24,25 @@ class AdminController extends Controller
         return response()->json($admin, 201);
     }
 
-
-    public function updateAdmin(Request $request)
+    public function getAdminById($id)
     {
-        $validatedData = Validator::make($request->all(), [
-            'fullName' => 'sometimes|required|string|max:255',
-            'email' => 'sometimes|required|email|unique:admins,email,' . auth()->id(),
-            'mobile' => 'sometimes|required|string|max:15',
-            'type' => 'sometimes|required|string',
-        ]);
-
-        if ($validatedData->fails()) {
-            return response()->json(['errors' => $validatedData->errors()], 422);
+        $admin = Admin::where('user_id', $id)->first();
+    
+        if ($admin) {
+            return response()->json($admin, 200); 
         }
+    
+        return response()->json(['message' => 'Admin not found'], 202);
+    }
 
-        $admin = auth()->user();
-        $admin->update($request->only('fullName', 'email', 'mobile', 'type'));
+
+
+    public function updateAdmin(Request $request, $idUser)
+    {
+
+        $admin = Admin::where('user_id', $idUser)->first();
+    
+        $admin->update($request->only('company_name', 'company_mobile', 'company_email'));
 
         return response()->json(['message' => 'Admin updated successfully', 'admin' => $admin], 200);
     }

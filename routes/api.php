@@ -41,10 +41,11 @@ Route::middleware(['throttle:api'])->group(function () {
     
     // Admin API 
     Route::get('admin', [AdminController::class, 'getAdmin']); 
-    Route::patch('admin', [AdminController::class, 'updateAdmin']); 
+    Route::get('getadmin/{id}', [AdminController::class, 'getAdminById']); 
+    Route::patch('admin/{idUser}', [AdminController::class, 'updateAdmin']); 
     Route::delete('admin', [AdminController::class, 'deleteAdmin']); 
     Route::get('admin/{idAdmin}', [AdminController::class, 'createAdmin']); 
-
+    
     // Staff API 
     Route::post('staff', [StaffController::class, 'createStaff']); 
     Route::delete('staff/{id}', [StaffController::class, 'deleteStaff']); 
