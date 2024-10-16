@@ -9,6 +9,8 @@ use App\Http\Controllers\ImageController;
 use App\Http\Controllers\FarmController;
 use App\Http\Controllers\SerreController;
 use App\Http\Controllers\StaffController;
+use App\Http\Controllers\ForgotPass;
+
 
 // Limiting request to 60 requests per minute
 Route::middleware(['throttle:api'])->group(function () {
@@ -19,8 +21,8 @@ Route::middleware(['throttle:api'])->group(function () {
     });
 
     // Essentials API
-    Route::post('register', [UserController::class, 'register']);                             // done
-    Route::post('login', [UserController::class, 'login']);                                   // done
+    Route::post('register', [UserController::class, 'register']);                           
+    Route::post('login', [UserController::class, 'login']);                                    
 
     // Grouping inside Sanctum Middleware         
     // User API 
@@ -46,8 +48,6 @@ Route::middleware(['throttle:api'])->group(function () {
     Route::post('refuse/{id}', [UserController::class, 'refuserUser']); 
     Route::get('updateUserRestriction/{id}/{access}', [UserController::class, 'updateUserRestriction']); 
     Route::post('updatePassword/{id}', [UserController::class, 'updatePassword']); 
-    Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail']);
-    Route::post('password/reset', [ResetPasswordController::class, 'reset']);
 
 
     
@@ -92,5 +92,14 @@ Route::middleware(['throttle:api'])->group(function () {
     Route::get('predictions/{predictionId}/images', [ImageController::class, 'getPredictionImages']);
     Route::patch('images/{id}', [ImageController::class, 'updateImage']);
     Route::delete('images/{id}', [ImageController::class, 'deleteImage']); 
+
+
+
+    Route::post('password/email', [ForgotPass::class, 'sendResetLinkEmail']);
+    Route::post('password/reset', [ForgotPass::class, 'reset']);
+    Route::post('otp/generate', [ForgotPass::class, 'generateOtp']);
+    Route::post('otp/validate', [ForgotPass::class, 'validateOtp']);
+
+
 
 });
