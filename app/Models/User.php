@@ -28,6 +28,7 @@ class User extends Model implements AuthenticatableContract
         "dashboard_notice",
         "liste_users_notice",
         "nouvelle_demande_notice",
+        "profile_notice",
     ];
 
     public function admins()

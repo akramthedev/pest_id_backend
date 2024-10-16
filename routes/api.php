@@ -32,7 +32,7 @@ Route::middleware(['throttle:api'])->group(function () {
     Route::get('notice4/{id}', [UserController::class, 'notice4']); 
     Route::get('notice5/{id}', [UserController::class, 'notice5']); 
     Route::get('notice6/{id}', [UserController::class, 'notice6']); 
-
+    Route::get('notice7/{id}', [UserController::class, 'notice7']); 
     Route::get('users', [UserController::class, 'getAllUsers']); 
     Route::get('usersNonAccepted', [UserController::class, 'getAllUsersNonAccepted']); 
     Route::get('user', [UserController::class, 'getUser']); 

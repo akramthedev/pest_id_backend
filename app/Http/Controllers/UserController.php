@@ -38,7 +38,7 @@ class UserController extends Controller
         $user = User::create([
             'fullName' => $request->fullName,
             'email' => $request->email,
-            'image' => "https://github.com/akramthedev/german86877978/blob/29deafd8def8d777117aff6413aa5c41b5a30b4d/Design%20sans%20titre.png?raw=true",
+            'image' => "https://github.com/akramthedev/pest_id_frontend/blob/master/images/avatar.png?raw=trueimageJOZNJORSFDOJFSWNVDO",
             'password' => Hash::make($request->password), 
             'type' => "admin",
             "canAccess" => 0, 
@@ -319,6 +319,21 @@ class UserController extends Controller
         $user->update(['nouvelle_demande_notice' => 1]);
         return response()->json(['message' => 'User updated successfully', 'user' => $user]);
     }
+
+
+
+    public function notice7($id)
+    {
+        $user = User::find($id);
+        if (!$user) {
+            return response()->json($user, 202);
+        }
+    
+        $user->update(['profile_notice' => 1]);
+        return response()->json(['message' => 'User updated successfully', 'user' => $user]);
+    }
+
+
 
 
     public function updateUser(Request $request, $idUser)
