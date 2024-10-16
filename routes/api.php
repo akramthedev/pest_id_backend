@@ -46,6 +46,10 @@ Route::middleware(['throttle:api'])->group(function () {
     Route::post('refuse/{id}', [UserController::class, 'refuserUser']); 
     Route::get('updateUserRestriction/{id}/{access}', [UserController::class, 'updateUserRestriction']); 
     Route::post('updatePassword/{id}', [UserController::class, 'updatePassword']); 
+    Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail']);
+    Route::post('password/reset', [ResetPasswordController::class, 'reset']);
+
+
     
     // Admin API 
     Route::get('admin', [AdminController::class, 'getAdmin']); 
