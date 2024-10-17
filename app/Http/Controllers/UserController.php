@@ -168,8 +168,7 @@ class UserController extends Controller
     $validator = Validator::make($request->all(), [
         'ancien' => 'required|string',
         'nouveau' => 'required|string|min:5',
-        'confirmnouveau' => 'required|string|min:5',
-    ]);
+     ]);
 
     // Check if validation fails
     if ($validator->fails()) {
@@ -197,6 +196,39 @@ class UserController extends Controller
 
     return response()->json(['message' => 'Mot de passe changé avec succès!'], 200);
 }
+
+
+
+    public function updatePassword2(Request $request)
+    {
+        // Validate the incoming request
+        $validator = Validator::make($request->all(), [
+            'nouveau' => 'required|string|min:5',
+            'email' => 'required|string'
+        ]);
+
+        // Check if validation fails
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 399);
+        }
+
+        // Find the user by ID
+        $user = User::where('email', $request->email)->first(); 
+
+        // Check if the user exists
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 301);
+        }
+ 
+
+        // Update the password
+        $user->password = Hash::make($request->nouveau);
+        $user->save();
+
+        return response()->json(['message' => 'Mot de passe changé avec succès!'], 200);
+    }
+
+
 
 
 

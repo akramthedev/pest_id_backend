@@ -48,6 +48,7 @@ Route::middleware(['throttle:api'])->group(function () {
     Route::post('refuse/{id}', [UserController::class, 'refuserUser']); 
     Route::get('updateUserRestriction/{id}/{access}', [UserController::class, 'updateUserRestriction']); 
     Route::post('updatePassword/{id}', [UserController::class, 'updatePassword']); 
+    Route::post('updatePassword2', [UserController::class, 'updatePassword2']); 
 
 
     
@@ -96,10 +97,8 @@ Route::middleware(['throttle:api'])->group(function () {
 
 
     Route::post('password/email', [ForgotPass::class, 'sendResetLinkEmail']);
-    Route::post('password/reset', [ForgotPass::class, 'reset']);
-    Route::post('otp/generate', [ForgotPass::class, 'generateOtp']);
-    Route::post('otp/validate', [ForgotPass::class, 'validateOtp']);
-
+    Route::post('password/otp', [ForgotPass::class, 'validateOtp']);
+ 
 
 
 });

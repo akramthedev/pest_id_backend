@@ -4,19 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use Illuminate\Support\Facades\Password;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
 use Ichtrojan\Otp\Otp;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Auth\Access\AuthorizationException;
+
+
 
 class ForgotPass extends Controller
 {
-
-
-    
-
+    // Step 1: Send OTP to user's email
     public function sendResetLinkEmail(Request $request)
     {
         // Validate email
@@ -25,79 +24,43 @@ class ForgotPass extends Controller
         ]);
     
         if ($validator->fails()) {
-            return response()->json(['status' => false, 'message' => $validator->errors()->first()]);
+            return response()->json(['status' => 400, 'message' => $validator->errors()->first()]);
         }
-    
+
         // Generate OTP
         $otp = (new Otp)->generate($request->email, 'numeric', 6, 15);
-    
+
+        // Store the OTP token and timestamp (for later validation)
+        session(['otpToken' => $otp->token]);
+
         // Send OTP via email
         Mail::raw("Your OTP is: {$otp->token}", function ($message) use ($request) {
             $message->to($request->email)
                     ->subject('Your OTP for Password Reset');
         });
-    
-        return response()->json(['status' => true, 'message' => 'OTP sent to your email']);
+
+        return response()->json(['status' => 200, 'message' => 'OTP sent to your email']);
     }
 
-    
-    
-
-
-
-    // Step 2: Generate OTP
-    public function generateOtp(Request $request)
-    {
-        $this->validate($request, [
-            'email' => 'required|email|exists:users,email',
-        ]);
-
-        $otp = (new Otp)->generate($request->email, 'numeric', 6, 15);
-        
-        return response()->json([
-            'status' => true,
-            'token' => $otp->token,
-            'message' => 'OTP generated'
-        ]);
-    }
-
-    // Step 3: Validate OTP
+    // Step 2: Validate OTP
     public function validateOtp(Request $request)
     {
         $this->validate($request, [
-            'email' => 'required|email|exists:users,email',
-            'token' => 'required',
+            'email' => 'required',
+            'otp' => 'required',
         ]);
 
-        $result = (new Otp)->validate($request->email, $request->token);
+        // Retrieve OTP from session
+        $otpToken = session('otpToken');
 
-        if ($result->status) {
-            return response()->json(['status' => true, 'message' => 'OTP is valid']);
+        // Check if OTP matches
+        if ($request->otp == $otpToken) {
+            // Store a flag in the session to indicate OTP is validated
+            session(['otpValidated' => true]);
+            return response()->json(['status' => 200, 'message' => 'OTP is valid']);
         } else {
-            return response()->json(['status' => false, 'message' => $result->message]);
+            return response()->json(['status' => 400, 'message' => 'Invalid OTP']);
         }
     }
-
-    // Step 4: Reset Password
-    public function reset(Request $request)
-    {
-        $this->validate($request, [
-            'email' => 'required|email|exists:users,email',
-            'password' => 'required|confirmed|min:8',
-            'token' => 'required'
-        ]);
-
-        // Validate the OTP first
-        $otpResult = (new Otp)->validate($request->email, $request->token);
-        if (!$otpResult->status) {
-            return response()->json(['status' => false, 'message' => $otpResult->message]);
-        }
-
-        // Update user password
-        $user = User::where('email', $request->email)->first();
-        $user->password = bcrypt($request->password);
-        $user->save();
-
-        return response()->json(['status' => true, 'message' => 'Password has been reset successfully']);
-    }
+ 
 }
