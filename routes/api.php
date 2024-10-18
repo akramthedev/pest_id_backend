@@ -85,6 +85,7 @@ Route::middleware(['throttle:api'])->group(function () {
     Route::get('predictions', [PredictionController::class, 'getAllPredictions']); 
     Route::get('singlePrediction/{predId}', [PredictionController::class, 'getSinglePredictions']); 
     Route::get('users/{userId}/predictions', [PredictionController::class, 'getUserPredictions']); 
+    Route::get('users/{userId}/predictions/with/images', [PredictionController::class, 'getUserPredictionsWithImages']); 
     Route::patch('predictions/{id}', [PredictionController::class, 'updatePrediction']); 
     Route::delete('predictions/{id}', [PredictionController::class, 'deletePrediction']);
 

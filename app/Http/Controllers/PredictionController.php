@@ -69,7 +69,13 @@ class PredictionController extends Controller
         return response()->json($predictions, 200);
     }
 
-
+    public function getUserPredictionsWithImages($userId){
+        $predictions = Prediction::where('user_id', $userId)
+        ->with('images') 
+        ->get();        
+        
+        return response()->json($predictions, 200);
+    }
 
     public function getUserPredictions($userId)
     {
