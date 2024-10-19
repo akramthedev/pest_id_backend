@@ -38,7 +38,7 @@ class UserController extends Controller
         $user = User::create([
             'fullName' => $request->fullName,
             'email' => $request->email,
-            'image' => "https://github.com/akramthedev/pest_id_frontend/blob/master/images/avatar.png?raw=trueimageJOZNJORSFDOJFSWNVDO",
+            'image' => "https://github.com/akramthedev/PFE_APP/blob/main/images-removebg-preview.png?raw=true",
             'password' => Hash::make($request->password), 
             'type' => "admin",
             "canAccess" => 0, 

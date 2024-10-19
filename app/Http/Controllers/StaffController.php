@@ -24,7 +24,7 @@ class StaffController extends Controller
             'email' => $request->email,
             'password' => bcrypt($request->password),
             'mobile' => $request->mobile,
-            'image' => "https://github.com/akramthedev/pest_id_frontend/blob/master/images/avatar.png?raw=trueimageJOZNJORSFDOJFSWNVDO",
+            'image' => "https://github.com/akramthedev/PFE_APP/blob/main/images-removebg-preview.png?raw=true",
             'type' => $request->typeS,
             'canAccess' => 1, 
             'isEmailVerified' => 1
