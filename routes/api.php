@@ -38,6 +38,7 @@ Route::middleware(['throttle:api'])->group(function () {
     Route::get('users', [UserController::class, 'getAllUsers']); 
     Route::get('usersNonAccepted', [UserController::class, 'getAllUsersNonAccepted']); 
     Route::get('user', [UserController::class, 'getUser']); 
+    Route::get('user-other-data/{id}', [UserController::class, 'getOtherDataOfUserInDashboard']); 
     Route::get('getAdminIdFromUserId/{idUser}', [UserController::class, 'getAdminIdFromUserId']); 
     Route::get('user/{id}', [UserController::class, 'getUserById']); 
     Route::post('updateUserInfos/{idUser}', [UserController::class, 'updateUser']); 
@@ -50,7 +51,7 @@ Route::middleware(['throttle:api'])->group(function () {
     Route::post('updatePassword/{id}', [UserController::class, 'updatePassword']); 
     Route::post('updatePassword2', [UserController::class, 'updatePassword2']); 
 
-
+     
     
     // Admin API 
     Route::get('admin', [AdminController::class, 'getAdmin']); 

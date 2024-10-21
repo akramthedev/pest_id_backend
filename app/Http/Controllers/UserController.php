@@ -93,6 +93,48 @@ class UserController extends Controller
     
     
 
+    
+    public function getOtherDataOfUserInDashboard ($id)
+    {
+        // Find the user by ID
+        $user = User::find($id);
+    
+        // Return 404 if the user is not found
+        if (!$user) {
+            return response()->json(['message' => 'User not found.'], 404);
+        }
+    
+        // Retrieve predictions with related images
+        $predictions = Prediction::with('images')
+            ->where('user_id', $id)
+            ->get();
+    
+        // Retrieve the admin associated with the user
+        $admin = Admin::where('user_id', $id)->first();
+    
+        // Initialize staff variable
+        $staffsCount = 0;
+    
+        // If admin exists, retrieve the number of associated staffs
+        if ($admin) {
+            $staffsCount = Staff::where('admin_id', $admin->id)->count(); // Use count instead of get() for performance
+        }
+    
+        // Retrieve the number of farms associated with the user
+        $farmsCount = Farm::where('user_id', $id)->count(); // Use count instead of get() for performance
+    
+        // Prepare the response data
+        $data = [
+            'farmsNumber' => $farmsCount,
+            'predictionsNumber' => $predictions->count(), // Use count on the collection
+            'staffsNumber' => $staffsCount,
+        ];
+    
+        // Return the response with a 200 status
+        return response()->json($data, 200);
+    }
+
+
     public function accepterUser($id)
     {
         // Validate that the user ID exists
