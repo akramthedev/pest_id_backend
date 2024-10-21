@@ -15,14 +15,13 @@ class PredictionController extends Controller
     public function createPrediction(Request $request)
     {
         
-         $validatedData = $request->validate([
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', 
+         $validatedData = $request->validate([ 
+            'image' => 'nullable', 
         ]);
     
-         $imagePath = $request->file('image')->store('images');
-    
-         $response = $this->uploadImageToExternalAPI($imagePath); 
-    
+       
+         $response = $this->uploadImageToExternalAPI($request->image); 
+     
          if (!$response || !isset($response['classA'], $response['classB'], $response['classC'])) {
             return response()->json(['message' => 'Image processing failed'], 400);
         }
@@ -39,8 +38,8 @@ class PredictionController extends Controller
         // Create the image and link to the prediction
         Image::create([
             'prediction_id' => $prediction->id,
-            'name' => basename($imagePath), 
-            'size' => $request->file('image')->getSize(),  
+            'name' => $request->image, 
+            'size' => 666,  
             'class_A' => $response['classA'],  
             'class_B' => $response['classB'],  
             'class_C' => $response['classC'],  

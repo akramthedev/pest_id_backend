@@ -16,7 +16,7 @@ class ImageController extends Controller
     {
         $validatedData = Validator::make($request->all(), [
             'prediction_id' => 'required|exists:predictions,id',
-            'image_path' => 'required|image|mimes:jpeg,png,jpg,gif|max:5000', 
+            'image_path' => 'required', 
             'description' => 'string|nullable',
         ]);
 
@@ -29,7 +29,7 @@ class ImageController extends Controller
 
         $image = Image::create([
             'prediction_id' => $request->prediction_id,
-            'name' => $imagePath,
+            'name' => $request->file('image_path'),
             'description' => $request->description,
         ]);
 

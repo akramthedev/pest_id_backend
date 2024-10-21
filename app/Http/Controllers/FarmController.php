@@ -96,7 +96,7 @@ class FarmController extends Controller
     
         // Check if the serre exists
         if (!$serre) {
-            return response()->json(['message' => 'Greenhouse not found for the specified farm.'], 234);
+            return response()->json(['farm' => $farm], 234);
         }
     
         // Return both farm and serre information

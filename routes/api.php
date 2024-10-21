@@ -25,6 +25,14 @@ Route::middleware(['throttle:api'])->group(function () {
     Route::post('login', [UserController::class, 'login']);                                    
 
     // Grouping inside Sanctum Middleware         
+    
+
+    Route::middleware(['auth:sanctum'])->group(function () {
+    
+    
+    
+    
+    
     // User API 
     Route::get('user_is_welcomed_done/{id}', [UserController::class, 'UserIsWelcomedDone']); 
     
@@ -48,8 +56,6 @@ Route::middleware(['throttle:api'])->group(function () {
     Route::post('accept/{id}', [UserController::class, 'accepterUser']); 
     Route::post('refuse/{id}', [UserController::class, 'refuserUser']); 
     Route::get('updateUserRestriction/{id}/{access}', [UserController::class, 'updateUserRestriction']); 
-    Route::post('updatePassword/{id}', [UserController::class, 'updatePassword']); 
-    Route::post('updatePassword2', [UserController::class, 'updatePassword2']); 
 
      
     
@@ -97,7 +103,10 @@ Route::middleware(['throttle:api'])->group(function () {
     Route::delete('images/{id}', [ImageController::class, 'deleteImage']); 
 
 
+    });
 
+    Route::post('updatePassword/{id}', [UserController::class, 'updatePassword']); 
+    Route::post('updatePassword2', [UserController::class, 'updatePassword2']); 
     Route::post('password/email', [ForgotPass::class, 'sendResetLinkEmail']);
     Route::post('password/otp', [ForgotPass::class, 'validateOtp']);
  
